@@ -18,8 +18,38 @@
             overflow: hidden;
         }
 
-        .container {
+        .container, .intro-screen {
             text-align: center;
+        }
+
+        .intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .intro-screen button {
+            padding: 15px 30px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            background: #d32f2f;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .intro-screen button:hover {
+            background: #b71c1c;
         }
 
         .strawberry {
@@ -30,18 +60,10 @@
         }
 
         @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-20px) rotate(5deg);
-            }
-            75% {
-                transform: translateY(-10px) rotate(-5deg);
-            }
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            75% { transform: translateY(-10px) rotate(-5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
         }
 
         .text {
@@ -53,15 +75,9 @@
         }
 
         @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         .video-container {
@@ -78,12 +94,16 @@
     </style>
 </head>
 <body>
+    <div class="intro-screen" id="intro-screen">
+        <button id="enter-button">Перейти на сайт</button>
+    </div>
+
     <audio id="background-music" loop>
         <source src="1.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
-    <div class="container" id="strawberry-container">
+    <div class="container" id="strawberry-container" style="display: none;">
         <img src="Strawberry -10.png" alt="Клубника" class="strawberry" id="strawberry">
         <div class="text">Нажми на меня</div>
     </div>
@@ -102,30 +122,25 @@
             const strawberryContainer = document.getElementById('strawberry-container');
             const videoContainer = document.getElementById('video-container');
             const video = document.getElementById('strawberry-video');
-    
-            // Попытка воспроизвести музыку
-            try {
-                music.play().catch(error => {
-                    console.log('Автовоспроизведение заблокировано. Нажмите на страницу.');
-                    document.body.addEventListener('click', function bodyClick() {
-                        music.play();
-                        document.body.removeEventListener('click', bodyClick);
-                    }, { once: true });
-                });
-            } catch (e) {
-                console.log('Ошибка при воспроизведении музыки:', e);
-            }
-    
-            // Остановка музыки и запуск видео при нажатии на клубнику
+            const introScreen = document.getElementById('intro-screen');
+            const enterButton = document.getElementById('enter-button');
+
+            enterButton.addEventListener('click', function() {
+                introScreen.style.display = 'none';
+                strawberryContainer.style.display = 'block';
+
+                // Воспроизведение музыки после нажатия
+                music.play().catch(e => console.log('Не удалось запустить музыку:', e));
+            });
+
             strawberry.addEventListener('click', function() {
-                music.pause(); // Останавливаем музыку
-                music.currentTime = 0; // Перематываем в начало
+                music.pause();
+                music.currentTime = 0;
                 strawberryContainer.style.display = 'none';
                 videoContainer.style.display = 'block';
                 video.play().catch(e => console.log('Не удалось запустить видео:', e));
             });
         });
     </script>
-    
 </body>
 </html>
